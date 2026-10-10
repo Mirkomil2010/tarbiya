@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-sinf loyiha ishi — Agar men maktab direktori bo‘lsam</title>
+  <style>
+    :root {
+      --navy: #10233f;
+      --blue: #2563eb;
+      --teal: #12a594;
+      --gold: #f4b942;
+      --paper: #f7f9fc;
+      --ink: #18263b;
+      --muted: #66758b
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at 15% 15%, #1e3a5f 0, #0b1425 42%, #080e19 100%);
+      color: var(--ink);
+      overflow: hidden
+    }
+
+    .deck {
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      place-items: center;
+      padding: 22px
+    }
+
+    .slide {
+      display: none;
+      position: relative;
+      width: min(1200px, 96vw);
+      aspect-ratio: 16/9;
+      max-height: calc(100vh - 88px);
+      background: linear-gradient(135deg, #fff 0%, #f4f8fc 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      padding: 5.1% 6%;
+      box-shadow: 0 28px 90px #0008;
+      border: 1px solid #ffffff80
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      animation: enter .35s ease-out
+    }
+
+    @keyframes enter {
+      from {
+        opacity: .55;
+        transform: translateY(8px) scale(.995)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    .slide:before {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #12a59420, #12a59400 70%);
+      right: -100px;
+      top: -160px;
+      pointer-events: none
+    }
+
+    .slide:after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 24px solid #f4b94218;
+      right: 7%;
+      bottom: -125px;
+      pointer-events: none
+    }
+
+    .kicker {
+      font-size: clamp(10px, 1.05vw, 14px);
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .kicker:before {
+      content: "";
+      display: inline-block;
+      width: 28px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 9px
+    }
+
+    h1 {
+      font-size: clamp(32px, 4.35vw, 62px);
+      line-height: 1.04;
+      letter-spacing: -.045em;
+      margin: 0 0 20px;
+      color: var(--navy);
+      max-width: 850px
+    }
+
+    h2 {
+      font-size: clamp(25px, 3.1vw, 43px);
+      line-height: 1.08;
+      letter-spacing: -.035em;
+      margin: 0 0 25px;
+      color: var(--navy);
+      max-width: 900px
+    }
+
+    p {
+      font-size: clamp(14px, 1.5vw, 20px);
+      line-height: 1.52;
+      margin: 0 0 12px
+    }
+
+    strong {
+      color: inherit
+    }
+
+    .subtitle {
+      font-size: clamp(16px, 1.85vw, 24px);
+      line-height: 1.45;
+      color: #53647b;
+      max-width: 760px;
+      margin-bottom: 28px
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 10px;
+      padding: 12px 17px;
+      background: var(--navy);
+      color: white;
+      font-weight: 750;
+      font-size: clamp(12px, 1.1vw, 15px);
+      width: max-content;
+      box-shadow: 0 8px 20px #10233f20
+    }
+
+    .tag:before {
+      content: "✦";
+      color: var(--gold);
+      font-size: 17px
+    }
+
+    .cover {
+      background: linear-gradient(125deg, #fff 0%, #eef7fa 52%, #fff5df 100%);
+      justify-content: center
+    }
+
+    .cover .kicker {
+      margin-bottom: 24px
+    }
+
+    .cover h1 {
+      max-width: 760px
+    }
+
+    .cover .orb {
+      position: absolute;
+      right: 8%;
+      top: 22%;
+      width: 25%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #78e1d2 0%, #20a99e 34%, #2460a8 73%, #10233f 100%);
+      box-shadow: inset -25px -25px 45px #10233f55, 0 25px 65px #2457a733
+    }
+
+    .cover .orb:before {
+      content: "";
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      border: 1px solid #ffffff50;
+      border-radius: 50%;
+      left: 15%;
+      top: 15%
+    }
+
+    .cover .orb:after {
+      content: "";
+      position: absolute;
+      width: 24%;
+      height: 24%;
+      border-radius: 50%;
+      background: var(--gold);
+      right: -7%;
+      top: 8%;
+      box-shadow: 0 0 32px #ffc85790
+    }
+
+    .cover .content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px
+    }
+
+    .footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #8793a5;
+      font-size: clamp(10px, .9vw, 12px);
+      font-weight: 650;
+      letter-spacing: .03em;
+      padding-top: 15px;
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid #e5eaf1
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      position: relative;
+      z-index: 1
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5ebf3;
+      border-radius: 18px;
+      padding: 19px 21px;
+      box-shadow: 0 8px 25px #172b4608;
+      position: relative;
+      overflow: hidden
+    }
+
+    .card:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(var(--teal), var(--blue))
+    }
+
+    .card .num {
+      font-size: clamp(20px, 2.2vw, 30px);
+      font-weight: 900;
+      color: var(--teal);
+      margin-bottom: 7px;
+      letter-spacing: -.04em
+    }
+
+    .card h3 {
+      font-size: clamp(15px, 1.45vw, 20px);
+      margin: 0 0 8px;
+      color: var(--navy)
+    }
+
+    .card p {
+      font-size: clamp(12px, 1.2vw, 16px);
+      margin: 0 0 6px;
+      color: #596a80
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 17px
+    }
+
+    .pill {
+      padding: 9px 13px;
+      background: #fff;
+      border: 1px solid #dce6ee;
+      border-radius: 9px;
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 700;
+      color: #38506d;
+      box-shadow: 0 3px 9px #14213d06
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 30px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      flex: 1
+    }
+
+    .big-number {
+      font-size: clamp(70px, 9vw, 128px);
+      font-weight: 950;
+      line-height: .95;
+      color: var(--blue);
+      letter-spacing: -.08em
+    }
+
+    .callout {
+      background: linear-gradient(145deg, #142e50, #10213a);
+      color: #fff;
+      border-radius: 20px;
+      padding: 25px 27px;
+      box-shadow: 0 15px 35px #10233f20;
+      position: relative;
+      overflow: hidden
+    }
+
+    .callout:after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 20px solid #ffffff0b;
+      right: -40px;
+      bottom: -55px
+    }
+
+    .callout p {
+      color: #d9e4f2;
+      position: relative;
+      z-index: 1
+    }
+
+    .callout strong {
+      color: #fff
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      position: relative;
+      z-index: 1
+    }
+
+    .step {
+      background: #fff;
+      border: 1px solid #e5ebf3;
+      border-radius: 17px;
+      padding: 19px 18px;
+      border-top: 4px solid var(--teal);
+      box-shadow: 0 8px 22px #10233f08
+    }
+
+    .step strong {
+      display: block;
+      font-size: clamp(14px, 1.4vw, 19px);
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: var(--navy)
+    }
+
+    .step p {
+      font-size: clamp(12px, 1.1vw, 15px);
+      color: #5b6a7f;
+      margin: 0
+    }
+
+    .checks {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 14px
+    }
+
+    .checks li {
+      font-size: clamp(14px, 1.4vw, 19px);
+      line-height: 1.38;
+      padding-left: 38px;
+      position: relative
+    }
+
+    .checks li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 25px;
+      height: 25px;
+      border-radius: 8px;
+      background: #d9f6ee;
+      color: #078674;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: 0 3px 8px #12a59418
+    }
+
+    hr {
+      border-color: #e5ebf3 !important
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 13px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 13px;
+      color: #e9eef8;
+      font-size: 13px
+    }
+
+    button {
+      border: 1px solid #ffffff30;
+      background: #ffffff10;
+      color: white;
+      border-radius: 11px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .2s, transform .2s
+    }
+
+    button:hover {
+      background: #ffffff25;
+      transform: translateY(-1px)
+    }
+
+    #next {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #062b2b
+    }
+
+    #next:hover {
+      background: #46c9b7
+    }
+
+    .progress {
+      width: 100px;
+      height: 5px;
+      background: #ffffff25;
+      border-radius: 9px;
+      overflow: hidden
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 16.666%;
+      background: var(--gold);
+      transition: width .25s
+    }
+
+    @media(max-width:650px) {
+      .deck {
+        padding: 7px
+      }
+
+      .slide {
+        width: 98vw;
+        max-height: calc(100vh - 75px);
+        padding: 5.5%;
+        border-radius: 17px
+      }
+
+      .cover .orb {
+        right: 3%;
+        top: 12%;
+        width: 25%;
+        opacity: .55
+      }
+
+      .grid {
+        gap: 8px
+      }
+
+      .card {
+        padding: 11px 12px
+      }
+
+      .split {
+        gap: 12px
+      }
+
+      .steps {
+        gap: 7px
+      }
+
+      .step {
+        padding: 11px
+      }
+
+      .footer {
+        padding-top: 8px
+      }
+
+      .controls {
+        gap: 6px
+      }
+
+      .controls button {
+        padding: 8px 9px;
+        font-size: 11px
+      }
+
+      .progress {
+        width: 45px
+      }
+
+      .checks {
+        gap: 9px
+      }
+
+      .callout {
+        padding: 15px
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        overflow: visible
+      }
+
+      .deck {
+        display: block;
+        height: auto;
+        padding: 0
+      }
+
+      .slide {
+        display: flex !important;
+        width: 100%;
+        max-height: none;
+        aspect-ratio: 16/9;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        page-break-after: always;
+        animation: none
+      }
+
+      .controls {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="deck">
+    <section class="slide active cover">
+      <div class="orb"></div>
+      <div class="content">
+        <div class="kicker">10-sinf · BSB-1 · Loyiha ishi</div>
+        <h1>Agar men maktab direktori bo‘lsam…</h1>
+        <p class="subtitle">Maktabda sifatli ta’lim, adolatli muhit va o‘quvchilar uchun yaxshi sharoit yaratish
+          loyihasi</p>
+        <div class="tag">Tarbiya va huquq asoslari</div>
+      </div>
+      <div class="footer"><span>Davlat va huquq asoslari</span><span>01 / 06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">01 · Muammo va maqsad</div>
+      <h2>Maktabdagi muammolarni aniqlash</h2>
+      <div class="split">
+        <div>
+          <p>Maktabda ayrim o‘quvchilar uchun darslarni tushunish, bo‘sh vaqtni foydali o‘tkazish yoki o‘z fikrini erkin
+            bildirish qiyin bo‘lishi mumkin.</p>
+          <div class="pill-list"><span class="pill">Ta’lim sifati</span><span class="pill">Intizom</span><span
+              class="pill">Tozalik</span><span class="pill">O‘quvchi fikri</span></div>
+        </div>
+        <div class="callout">
+          <p><strong>Mening maqsadim</strong></p>
+          <p>Har bir o‘quvchi o‘zini xavfsiz his qiladigan, bilim oladigan va qobiliyatini rivojlantira oladigan maktab
+            muhitini yaratish.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Muammo va maqsad</span><span>02 / 06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">02 · Ta’sir va sabablar</div>
+      <h2>Muammo kimlarga ta’sir qiladi?</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>O‘quvchilarga</h3>
+          <p>Bilim olishga qiziqish va o‘ziga ishonch pasayishi mumkin.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>O‘qituvchilarga</h3>
+          <p>Darsni samarali tashkil etish va har bir o‘quvchiga yordam berish qiyinlashadi.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>Ota-onalarga</h3>
+          <p>Farzandining ta’limi va maktabdagi sharoiti haqida xavotir paydo bo‘lishi mumkin.</p>
+        </div>
+        <div class="card">
+          <div class="num">04</div>
+          <h3>Maktab jamoasiga</h3>
+          <p>Hamkorlik, tartib va o‘zaro hurmatni kuchaytirish zarur bo‘ladi.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Muammoni tahlil qilish</span><span>03 / 06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">03 · Ma’lumot va qonun</div>
+      <h2>Qanday qilib to‘g‘ri qaror qilaman?</h2>
+      <div class="split">
+        <div>
+          <ul class="checks">
+            <li>O‘quvchilar, ota-onalar va o‘qituvchilar orasida so‘rov o‘tkazaman.</li>
+            <li>Darslar, maktab tozaligi va xavfsizlik sharoitlarini o‘rganaman.</li>
+            <li>Takliflarni maktab kengashi va mas’ul xodimlar bilan muhokama qilaman.</li>
+            <li>Qarorlarni amaldagi ta’lim qoidalari va qonunlarga muvofiq qabul qilaman.</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <div class="big-number" style="color:#ffc857">3</div>
+          <p><strong>Asosiy tamoyil</strong></p>
+          <p>Qonuniylik, adolat va ochiqlik. Har bir o‘quvchining huquqi hurmat qilinishi kerak.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Dalil va huquqiy tahlil</span><span>04 / 06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">04 · Yechim va harakat rejasi</div>
+      <h2>Men amalga oshiradigan 3 ta ish</h2>
+      <div class="steps">
+        <div class="step"><strong>1. Ta’lim sifatini oshirish</strong>
+          <p>Qo‘shimcha maslahat soatlari, fan to‘garaklari va kitobxonlik tadbirlarini tashkil etish.</p>
+        </div>
+        <div class="step"><strong>2. Adolatli va xavfsiz muhit</strong>
+          <p>Bullyingga qarshi choralar, murojaat qutisi va muammolarni xolis ko‘rib chiqish.</p>
+        </div>
+        <div class="step"><strong>3. Yaxshi sharoit</strong>
+          <p>Sinf xonalari, hojatxonalar va maktab hududining tozaligi hamda xavfsizligiga e’tibor berish.</p>
+        </div>
+      </div>
+      <p style="margin-top:20px"><strong>Harakat rejasi:</strong> muammoni aniqlash → jamoa bilan maslahatlashish →
+        mas’ullar va muddatlarni belgilash → ishlarni bajarish → natijani tekshirish.</p>
+      <div class="footer"><span>Huquq, burch va javobgarlik</span><span>05 / 06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">05 · Natija va xulosa</div>
+      <h2>Kutiladigan natijalar</h2>
+      <div class="split">
+        <div>
+          <ul class="checks">
+            <li>O‘quvchilarning dars va to‘garaklardagi faolligi oshadi.</li>
+            <li>Maktabda o‘zaro hurmat va adolat muhiti mustahkamlanadi.</li>
+            <li>O‘quvchilar o‘z fikrini mas’uliyat bilan bildirishni o‘rganadi.</li>
+            <li>Maktab tozaligi va xavfsizligiga e’tibor kuchayadi.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Natijani baholash</h3>
+          <p>• o‘quvchilar va ota-onalar fikri</p>
+          <p>• to‘garaklardagi ishtirok</p>
+          <p>• murojaatlar va ularning yechimi</p>
+          <p>• tozalik va xavfsizlik tekshiruvi</p>
+          <hr style="border:0;border-top:1px solid #e3e8f1;margin:16px 0">
+          <p><strong>Xulosa:</strong> yaxshi direktor faqat talab qo‘ymaydi — u tinglaydi, adolatli qaror qiladi va
+            maktab jamoasi bilan birga ishlaydi.</p>
+        </div>
+      </div>
+      <div class="footer"><span>E’tiboringiz uchun rahmat!</span><span>06 / 06</span></div>
+    </section>
+  </div>
+  <div class="controls">
+    <button id="prev" aria-label="Oldingi slayd">← Oldingi</button>
+    <span id="counter">1 / 6</span>
+    <div class="progress"><span id="bar"></span></div>
+    <button id="next" aria-label="Keyingi slayd">Keyingi →</button>
+  </div>
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    let current = 0;
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      document.getElementById('counter').textContent = `${current + 1} / ${slides.length}`;
+      document.getElementById('bar').style.width = `${(current + 1) / slides.length * 100}%`;
+    }
+    document.getElementById('prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('next').addEventListener('click', () => show(current + 1));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') show(current + 1);
+      if (e.key === 'ArrowLeft') show(current - 1);
+    });
+  </script>
+</body>
+
+</html>
